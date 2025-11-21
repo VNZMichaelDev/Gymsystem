@@ -69,6 +69,10 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)  # Inicializa JWT
     
+    # Crear tablas automáticamente si no existen
+    with app.app_context():
+        db.create_all()
+    
     # Handlers de JWT
     @jwt.unauthorized_loader
     def no_token(msg):
