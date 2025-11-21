@@ -1,0 +1,168 @@
+<!-- Reportes page -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Reportes - GET FIT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/reportes.css" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- jsPDF + AutoTable for client-side PDF exports -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    /* Force uniform chart canvas size for the main grid charts */
+    .grid .card canvas { width: 100% !important; height: 160px !important; }
+    .card-actions { display: flex; gap: .4rem; }
+    .btn.small { padding: .25rem .5rem; font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <!-- Icono del Logo -->
+          <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12h2" stroke="var(--brand-green)"></path><path d="M20 12h2" stroke="var(--brand-green)"></path><path d="M6 12h12" stroke="var(--brand-green)"></path><path d="M6 12v-2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" stroke="var(--brand-green)"></path><path d="M6 12v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2" stroke="var(--brand-green)"></path>
+          </svg>
+        <a href="dashboard.html"><span class="logo-text">GET FIT</span></a>
+        </div>
+        <nav class="sidebar-nav">
+          <!-- Enlace Clientes -->
+          <a href="clientes.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="link-text">Clientes</span>
+          </a>
+          <!-- Enlace Pagos -->
+          <a href="pagos.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            <span class="link-text">Pagos</span>
+          </a>
+          <!-- Enlace Membresías -->
+          <a href="membresias.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.5a2.12 2.12 0 0 1 3 0L12 8.5l5.5-5.5a2.12 2.12 0 0 1 3 0c.94.94.94 2.46 0 3.4L12 15l-8.5-8.5c-.94-.94-.94-2.46 0-3.4Z"/><path d="m12 15 8.5 8.5"/><path d="M12 15 3.5 23.5"/></svg>
+            <span class="link-text">Membresías</span>
+          </a>
+          <!-- Enlace Asistencias (Activo) -->
+          <a href="asistencia.html" class="nav-link active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 14 2 2 4-4"/></svg>
+            <span class="link-text">Asistencias</span>
+          </a>
+          <!-- Enlace Reportes -->
+          <a href="reportes.html" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            <span class="link-text">Reportes</span>
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <!-- Enlace Salir -->
+        <a href="#" id="btnSalir" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span class="link-text">Salir</span>
+        </a>
+      </div>
+    </aside>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+      <div class="filter-bar">
+        <h1>Reportes</h1>
+      </div>
+      <p class="muted">Indicadores clave para tomar decisiones.</p>
+
+      <section class="grid">
+      
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="margin:0">Asistencias por rango</h3>
+          <div class="card-actions">
+            <button class="btn small export-btn" data-type="asistencias" data-format="csv">CSV</button>
+            <button class="btn small export-btn" data-type="asistencias" data-format="pdf">PDF</button>
+          </div>
+        </div>
+        <div style="display:flex; gap: .5rem; align-items:center; margin-bottom:.5rem;">
+          <label style="font-size:.9rem">Desde <input id="asist_fecha_inicio" type="date" style="margin-left:.35rem"></label>
+          <label style="font-size:.9rem">Hasta <input id="asist_fecha_fin" type="date" style="margin-left:.35rem"></label>
+          <button id="btnAsistActualizar" class="btn" style="margin-left:.5rem">Actualizar</button>
+        </div>
+        <canvas id="chAsistenciasPeriodo" height="160"></canvas>
+        <div id="stAsistenciasPeriodo" class="muted"></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="margin:0">Ingresos por membresía</h3>
+          <div class="card-actions">
+            <button class="btn small export-btn" data-type="ingresos" data-format="csv">CSV</button>
+            <button class="btn small export-btn" data-type="ingresos" data-format="pdf">PDF</button>
+          </div>
+        </div>
+        <div style="display:flex; gap: .5rem; align-items:center; margin-bottom:.5rem;">
+          <label style="font-size:.9rem">Desde <input id="ing_fecha_inicio" type="date" style="margin-left:.35rem"></label>
+          <label style="font-size:.9rem">Hasta <input id="ing_fecha_fin" type="date" style="margin-left:.35rem"></label>
+          <button id="btnIngActualizar" class="btn" style="margin-left:.5rem">Actualizar</button>
+        </div>
+        <canvas id="chIngresosMemb" height="160"></canvas>
+        <div id="stIngresosMemb" class="muted"></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="margin:0">Membresías activas</h3>
+          <div class="card-actions">
+            <button class="btn small export-btn" data-type="membresias_activas" data-format="csv">CSV</button>
+            <button class="btn small export-btn" data-type="membresias_activas" data-format="pdf">PDF</button>
+          </div>
+        </div>
+        <div style="display:flex; gap:.5rem; align-items:center; margin-bottom:.5rem;">
+          <label style="font-size:.9rem">Desde <input id="membact_fecha_inicio" type="date" style="margin-left:.35rem"></label>
+          <label style="font-size:.9rem">Hasta <input id="membact_fecha_fin" type="date" style="margin-left:.35rem"></label>
+          <button id="btnMembActActualizar" class="btn" style="margin-left:.5rem">Actualizar</button>
+        </div>
+        <canvas id="chMembActivas" height="160"></canvas>
+        <div id="stMembActivas" class="muted"></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="margin:0">Membresías por precio</h3>
+          <div class="card-actions">
+            <button class="btn small export-btn" data-type="membresias_precio" data-format="csv">CSV</button>
+            <button class="btn small export-btn" data-type="membresias_precio" data-format="pdf">PDF</button>
+          </div>
+        </div>
+        <canvas id="chMembPorPrecio" height="160"></canvas>
+        <div id="stMembPorPrecio" class="muted"></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="margin:0">Clientes nuevos por mes</h3>
+          <div class="card-actions">
+            <button class="btn small export-btn" data-type="clientes_nuevos" data-format="csv">CSV</button>
+            <button class="btn small export-btn" data-type="clientes_nuevos" data-format="pdf">PDF</button>
+          </div>
+        </div>
+        <div style="display:flex; gap:.5rem; align-items:center; margin-bottom:.5rem;">
+          <label style="font-size:.9rem">Desde <input id="cli_fecha_inicio" type="date" style="margin-left:.35rem"></label>
+          <label style="font-size:.9rem">Hasta <input id="cli_fecha_fin" type="date" style="margin-left:.35rem"></label>
+          <button id="btnCliActualizar" class="btn" style="margin-left:.5rem">Actualizar</button>
+        </div>
+        <canvas id="chClientesNuevos" height="160"></canvas>
+        <div id="stClientesNuevos" class="muted"></div>
+      </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/reportes.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Login API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 300px; padding: 8px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ddd; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>Ejemplo de Petición API de Login</h1>
+    
+    <form id="testLoginForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="usuario@ejemplo.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" placeholder="contraseña" required>
+        </div>
+        
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <hr>
+    
+    <h2>JSON de la petición:</h2>
+    <pre id="jsonRequest">{
+  "email": "usuario@ejemplo.com",
+  "password": "contraseña123"
+}</pre>
+    
+    <h2>Respuesta esperada:</h2>
+    <pre id="jsonResponse">{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": 1,
+    "correo": "usuario@ejemplo.com"
+  }
+}</pre>
+
+    <script type="module">
+        import { loginAPI, getToken } from './js/api.js';
+        
+        const form = document.getElementById('testLoginForm');
+        const result = document.getElementById('result');
+        const jsonRequest = document.getElementById('jsonRequest');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Mostrar el JSON de la petición
+            jsonRequest.textContent = JSON.stringify({
+                email: email,
+                password: password
+            }, null, 2);
+            
+            result.innerHTML = '<p>Enviando petición...</p>';
+            result.className = 'result';
+            
+            try {
+                // Usar la función loginAPI
+                const response = await loginAPI(email, password);
+                
+                if (response.success) {
+                    result.innerHTML = `
+                        <h3>✅ Login Exitoso</h3>
+                        <p><strong>Token:</strong> ${response.token.substring(0, 50)}...</p>
+                        <p><strong>Usuario ID:</strong> ${response.user.id}</p>
+                        <p><strong>Email:</strong> ${response.user.correo}</p>
+                        <p><strong>Token guardado en localStorage:</strong> ${getToken() ? 'Sí' : 'No'}</p>
+                    `;
+                    result.className = 'result success';
+                } else {
+                    result.innerHTML = `
+                        <h3>❌ Error en Login</h3>
+                        <p>${response.message}</p>
+                    `;
+                    result.className = 'result error';
+                }
+            } catch (error) {
+                result.innerHTML = `
+                    <h3>❌ Error de Conexión</h3>
+                    <p>${error.message}</p>
+                `;
+                result.className = 'result error';
+            }
+        });
+        
+        // Mostrar si ya hay una sesión activa
+        const currentToken = getToken();
+        if (currentToken) {
+            result.innerHTML = `
+                <h3>ℹ️ Sesión Activa</h3>
+                <p>Ya tienes una sesión iniciada</p>
+                <p><strong>Token:</strong> ${currentToken.substring(0, 50)}...</p>
+            `;
+            result.className = 'result';
+        }
+    </script>
+</body>
+</html>

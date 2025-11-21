@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; }
+        input { padding: 8px; width: 300px; }
+        button { padding: 10px 20px; margin: 5px; }
+        #output { background: #f0f0f0; padding: 15px; margin-top: 20px; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test de Login - Debug</h1>
+    
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="email" value="admin@gym.local" required>
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" name="password" value="admin123" required>
+        </div>
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+    
+    <div id="loginMsg" style="margin-top: 10px; padding: 10px; min-height: 20px;"></div>
+    
+    <div style="margin-top: 20px;">
+        <button onclick="checkStoredData()">Verificar Storage</button>
+        <button onclick="testValidateToken()">Validar Token</button>
+        <button onclick="testClientesAPI()">Probar Clientes API</button>
+        <button onclick="clearStorage()">Limpiar Storage</button>
+        <button onclick="logout()">Cerrar Sesión</button>
+    </div>
+    
+    <div id="output"></div>
+    
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
+            output.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            console.log(message);
+        }
+        
+        function checkStoredData() {
+            const token = localStorage.getItem('token');
+            const accessToken = localStorage.getItem('ACCESS_TOKEN');
+            const user = localStorage.getItem('user');
+            
+            log('<h3>Estado del Storage:</h3>');
+            log(`Token: ${token ? token.substring(0, 50) + '...' : 'No hay token'}`);
+            log(`Access Token: ${accessToken ? accessToken.substring(0, 50) + '...' : 'No hay access token'}`);
+            log(`Usuario: ${user || 'No hay usuario'}`);
+        }
+        
+        async function testValidateToken() {
+            try {
+                log('Validando token...');
+                const isValid = await validateToken();
+                log(`Token válido: ${isValid}`, isValid ? 'success' : 'error');
+            } catch (error) {
+                log(`Error validando token: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testClientesAPI() {
+            try {
+                log('Probando API de clientes...');
+                const result = await getClientes();
+                log(`Clientes obtenidos: ${JSON.stringify(result, null, 2)}`, 'success');
+            } catch (error) {
+                log(`Error en API de clientes: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearStorage() {
+            localStorage.clear();
+            log('Storage limpiado', 'success');
+        }
+        
+        // Override del submit para debugging
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const output = document.getElementById('output');
+            output.innerHTML = '<h3>Iniciando proceso de login...</h3>';
+            
+            const email = this.email.value;
+            const password = this.password.value;
+            
+            log(`Intentando login con: ${email}`);
+            
+            try {
+                const result = await loginAPI(email, password);
+                
+                if (result.success) {
+                    log('✓ Login exitoso!', 'success');
+                    log(`Token: ${result.token.substring(0, 50)}...`, 'success');
+                    log(`Usuario: ${JSON.stringify(result.user)}`, 'success');
+                    
+                    // Verificar que se guardó correctamente
+                    setTimeout(() => {
+                        checkStoredData();
+                    }, 500);
+                    
+                } else {
+                    log(`✗ Login falló: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                log(`✗ Error de conexión: ${error.message}`, 'error');
+            }
+        });
+        
+        // Mostrar estado inicial
+        window.addEventListener('load', function() {
+            checkStoredData();
+        });
+    </script>
+</body>
+</html>

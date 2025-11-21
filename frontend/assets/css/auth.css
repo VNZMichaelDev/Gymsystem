@@ -1,0 +1,185 @@
+/* --- ESTILOS GLOBALES Y FUENTES --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #121212;
+    color: #ffffff;
+    overflow: hidden; /* Evita el scroll */
+}
+
+/* --- ESTRUCTURA DE PANTALLA DIVIDIDA --- */
+.auth-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- 1. PANEL DE BRANDING (IZQUIERDA) --- */
+.branding-panel {
+    flex: 1;
+    background: url(https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop) center center/cover;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.branding-panel::before { /* Capa oscura sobre la imagen para legibilidad */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.branding-content {
+    position: relative; /* Para que esté sobre la capa oscura */
+    z-index: 1;
+}
+
+.branding-content h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.branding-content p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+}
+
+/* --- 2. PANEL DE FORMULARIO (DERECHA) --- */
+.form-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.form-box-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-box h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.form-box .recovery-text {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 40px;
+}
+
+/* --- NOVEDAD: INPUTS CON ETIQUETA FLOTANTE --- */
+.input-group {
+    position: relative;
+    margin-bottom: 35px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+.input-group label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    pointer-events: none; /* Permite hacer clic a través de la etiqueta */
+    z-index: 0;
+}
+
+/* La magia de la animación */
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: -15px;
+    left: 0;
+    font-size: 0.8rem;
+    color: #A3B821; /* Verde limón oscuro */
+}
+
+.input-group input:focus {
+    border-bottom-color: #A3B821;
+}
+
+/* --- BOTONES Y ENLACES --- */
+.auth-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #A3B821;
+    color: #121212;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.auth-btn:hover {
+    background: #b9d12f;
+    box-shadow: 0 0 15px rgba(163, 184, 33, 0.6);
+    transform: translateY(-2px);
+}
+
+.extra-links {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.extra-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.extra-links a:hover {
+    color: #A3B821;
+}
+
+/* --- MENSAJES DE RESPUESTA --- */
+.message {
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* --- DISEÑO RESPONSIVO --- */
+@media (max-width: 900px) {
+    .branding-panel {
+        display: none; /* Oculta el panel de la marca en pantallas pequeñas */
+    }
+    .form-panel {
+        flex: 2; /* Ocupa todo el espacio */
+    }
+}

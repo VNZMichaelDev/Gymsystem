@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Pagos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-box { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #fee; border-left: 4px solid #f44; }
+        .success { background: #efe; border-left: 4px solid #4f4; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug - Módulo de Pagos</h1>
+    
+    <div class="debug-box">
+        <h3>1. Verificación de Token</h3>
+        <p>Token: <span id="tokenStatus">Verificando...</span></p>
+        <button onclick="checkLogin()">🔑 Ir a Login</button>
+    </div>
+    
+    <div class="debug-box">
+        <h3>2. Prueba de Conexión API</h3>
+        <p>Estado: <span id="apiStatus">No probado</span></p>
+        <button onclick="testAPI()">🌐 Probar API</button>
+    </div>
+    
+    <div class="debug-box">
+        <h3>3. Carga de Clientes</h3>
+        <p>Estado: <span id="clientesStatus">No probado</span></p>
+        <button onclick="testClientes()">👥 Probar Clientes</button>
+        <div id="clientesList"></div>
+    </div>
+    
+    <div class="debug-box">
+        <h3>4. Navegación</h3>
+        <button onclick="location.href='pagos.html'">📋 Ir a Pagos</button>
+        <button onclick="location.href='index.html'">🏠 Ir a Inicio</button>
+    </div>
+
+    <script type="module">
+        import { authFetch, setToken, getToken, API_BASE } from './js/api.js';
+        
+        window.API_BASE = API_BASE;
+        window.getToken = getToken;
+        window.authFetch = authFetch;
+        
+        // Verificar token al cargar
+        const token = getToken();
+        const tokenStatus = document.getElementById('tokenStatus');
+        
+        if (token) {
+            tokenStatus.textContent = '✅ Token presente';
+            tokenStatus.className = 'success';
+        } else {
+            tokenStatus.textContent = '❌ Sin token';
+            tokenStatus.className = 'error';
+        }
+        
+        window.checkLogin = () => {
+            location.href = 'index.html';
+        };
+        
+        window.testAPI = async () => {
+            const status = document.getElementById('apiStatus');
+            status.textContent = 'Probando...';
+            
+            try {
+                const response = await fetch(API_BASE + '/health');
+                if (response.ok) {
+                    status.textContent = '✅ API funcionando';
+                    status.className = 'success';
+                } else {
+                    status.textContent = `❌ API error: ${response.status}`;
+                    status.className = 'error';
+                }
+            } catch (error) {
+                status.textContent = `❌ Error conexión: ${error.message}`;
+                status.className = 'error';
+            }
+        };
+        
+        window.testClientes = async () => {
+            const status = document.getElementById('clientesStatus');
+            const list = document.getElementById('clientesList');
+            
+            status.textContent = 'Cargando...';
+            list.innerHTML = '';
+            
+            try {
+                const res = await authFetch('/clientes/?size=10');
+                const data = await res.json();
+                const clientes = Array.isArray(data) ? data : (data.data || []);
+                
+                status.textContent = `✅ ${clientes.length} clientes encontrados`;
+                status.className = 'success';
+                
+                if (clientes.length > 0) {
+                    list.innerHTML = '<ul>' + 
+                        clientes.map(c => `<li>${c.nombre_completo} - ${c.numero_documento}</li>`).join('') +
+                        '</ul>';
+                } else {
+                    list.innerHTML = '<p>No hay clientes en la base de datos</p>';
+                }
+                
+            } catch (error) {
+                status.textContent = `❌ Error: ${error.message}`;
+                status.className = 'error';
+                list.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        };
+        
+        console.log('🔧 Debug page loaded');
+        console.log('🌐 API Base:', API_BASE);
+        console.log('🔑 Token:', token ? 'Present' : 'Missing');
+    </script>
+</body>
+</html>

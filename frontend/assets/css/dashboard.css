@@ -1,0 +1,241 @@
+/* Dashboard specific styles to match the app theme */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width:900px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.kpi {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+.kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--brand-green);
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.03);
+    color: var(--brand-green);
+}
+
+.kpi .kpi-label {
+    margin-top: 0.25rem;
+}
+
+.kpi-label {
+    color: var(--text-muted);
+    margin-top: .25rem
+}
+
+.shortcuts {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: stretch; /* allow children to stretch vertically */
+    width: 100%;
+}
+
+/* Make top-level shortcuts expand equally to fill the row (dashboard home) */
+.shortcuts .shortcut {
+    flex: 1 1 0;
+    min-width: 0; /* prevent overflow from long text */
+    width: auto;
+}
+
+/* Make cliente summary shortcuts expand to fill the available width
+   Scoped to the clientes summary host to avoid changing dashboard global layout */
+#clientesSummaryHost {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+#clientesSummaryHost .shortcut {
+    /* each card will grow/shrink equally to fill the row */
+    flex: 1 1 0;
+    min-width: 0; /* prevent overflow from long text */
+    width: auto; /* let flex control size */
+    height: 140px;
+}
+
+/* Make membership summary host behave like clientes: full-width horizontal cards */
+#membResumenHost {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+#membResumenHost .shortcut {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: 140px;
+}
+
+/* Make payments summary host behave like memberships: full-width horizontal cards */
+#pagosSummaryHost {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+#pagosSummaryHost .shortcut {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: 140px;
+}
+
+/* Make asistencia summary host behave like memberships/payments: full-width horizontal cards */
+#asistResumenHost {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+#asistResumenHost .shortcut {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: 140px;
+}
+
+@media (max-width:900px) {
+    /* stack cards on smaller screens for readability */
+    #clientesSummaryHost { flex-direction: row; flex-wrap: wrap; }
+    #clientesSummaryHost .shortcut { width: calc(50% - .5rem); }
+}
+
+@media (max-width:480px) {
+    #clientesSummaryHost { flex-direction: column; }
+    #clientesSummaryHost .shortcut { width: 100%; }
+}
+
+/* Large vertical card shortcuts */
+.shortcut {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.15rem 1rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+    color: var(--text-primary);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.04);
+    text-decoration: none;
+    /* let flex container decide width so cards expand horizontally */
+    width: auto;
+    height: 140px;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.shortcut .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(158,240,26,0.12), rgba(158,240,26,0.06));
+    color: var(--brand-green);
+}
+
+
+.shortcut .text,
+.shortcut .name {
+    /* More striking font and style for card titles */
+    font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    text-align: center;
+}
+
+.shortcut .value {
+    font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--brand-green);
+}
+
+.shortcut:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 22px 40px rgba(0,0,0,0.55);
+    background: linear-gradient(180deg, rgba(158,240,26,0.04), rgba(0,0,0,0.04));
+}
+
+/* Top links (filter area) should look like plain text links, not buttons */
+.top-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0 .5rem;
+    display: inline-block;
+}
+
+.top-link:hover {
+    color: var(--brand-green);
+    text-decoration: underline;
+}
+
+#notificacionesHost .notif {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#notificacionesHost .notif-left {
+    display: flex;
+    flex-direction: column
+}
+
+#notificacionesHost .notif-right {
+    color: var(--text-muted);
+    min-width: 120px;
+    text-align: right
+}
+
+.empty {
+    padding: 1rem;
+    color: var(--text-muted);
+    font-style: italic
+}
+
+/* Responsive adjustments for large shortcut cards */
+@media (max-width:900px) {
+    .shortcuts { justify-content: center; }
+    .shortcut { width: calc(50% - 1rem); height: 140px; }
+}
+
+@media (max-width:480px) {
+    .shortcut { width: 100%; height: 120px; }
+}

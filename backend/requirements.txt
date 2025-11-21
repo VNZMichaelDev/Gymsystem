@@ -1,0 +1,21 @@
+# Python dependencies
+Flask                   # Framework web para el backend
+Flask-CORS               # Habilita CORS para que frontend y backend puedan comunicarse
+Flask-Migrate            # Herramienta de migración para SQLAlchemy (migraciones de base de datos)
+SQLAlchemy               # ORM para interactuar con la base de datos SQLite
+alembic                  # Librería de migraciones de base de datos, integrada con Flask-Migrate
+python-dotenv            # Para cargar variables de entorno desde un archivo .env
+bcrypt                   # Para hashear contraseñas de forma segura
+flask-jwt-extended       # Para manejar la autenticación con JWT (JSON Web Tokens)
+requests                 # Para hacer peticiones HTTP (por ejemplo, para consultar DNI/CE/RUC)
+Pillow                   # Para manejar y validar imágenes (comprobantes de pago)
+python-magic             # Para validar los tipos MIME reales de los archivos
+APScheduler              # Para tareas programadas, como vencimientos de membresías
+email-validator          # Para validar formatos de correo electrónico
+itsdangerous             # Para generar tokens seguros (por ejemplo, para restablecer contraseñas)
+pytest                   # Framework de pruebas para Python
+pytest-flask             # Extensiones de pytest para probar aplicaciones Flask
+pytest-mock              # Para crear mocks en las pruebas
+pytest-cov               # Para medir la cobertura de las pruebas
+coverage                 # Herramienta para medir la cobertura del código
+Flask-Testing            # Utilidades adicionales para probar aplicaciones Flask

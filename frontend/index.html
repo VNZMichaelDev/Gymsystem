@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetFit - Iniciar Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="branding-panel">
+            <div class="branding-content">
+                <h1>GetFit</h1>
+                <p>Transforma tu cuerpo, domina tu mente.</p>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="form-box-wrapper">
+                
+                <div class="form-box" id="loginBox">
+                    <h2>Bienvenido de Vuelta</h2>
+                    <form id="loginForm">
+                        <div class="input-group">
+                            <input type="email" id="email" name="email" required placeholder=" ">
+                            <label for="email">Correo Electrónico</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="password" name="password" required placeholder=" ">
+                            <label for="password">Contraseña</label>
+                        </div>
+                        <button type="submit" class="auth-btn">Ingresar</button>
+                        <div id="loginMsg" class="message"></div>
+                    </form>
+                    <div class="extra-links">
+                        <a href="#" id="forgotPassword">¿Olvidaste tu contraseña?</a>
+                    </div>
+                </div>
+
+                <div class="form-box" id="forgotPasswordBox" style="display: none;">
+                    <h2>Recuperar Contraseña</h2>
+                    <p class="recovery-text">Ingresa tu correo para recibir un enlace de recuperación.</p>
+                    <form id="forgotPasswordForm">
+                        <div class="input-group">
+                            <input type="email" id="recovery-email" name="email" required placeholder=" ">
+                            <label for="recovery-email">Correo Electrónico</label>
+                        </div>
+                        <button type="submit" class="auth-btn">Enviar Enlace</button>
+                        <div id="recoveryMsg" class="message"></div>
+                    </form>
+                    <div class="extra-links">
+                        <a href="#" id="backToLogin">← Volver a Iniciar Sesión</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/api.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        import { getToken, validateToken } from './js/api.js';
+        (async () => {
+            try {
+                if (getToken() && await validateToken()) {
+                    console.log('Sesión activa encontrada. Redirigiendo...');
+                    window.location.href = 'dashboard.html';
+                }
+            } catch (error) {
+                console.error('No se pudo validar el token.');
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+/* Estilos específicos para la página de Reportes */
+
+/* Contenedor de tarjetas en grilla responsiva */
+.grid {
+	display: grid;
+	gap: 1.5rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	margin-top: 1rem;
+}
+
+@media (max-width: 1100px) {
+	.grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Cartas: ya heredan de .card en styles.css; aquí afinamos detalles para charts */
+.card canvas {
+	width: 100% !important;
+	height: auto !important;
+}
+
+/* Estado vacío/tablas resumen */
+.empty {
+	padding: 1rem;
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+/* Ajustes de tipografía dentro de tarjetas */
+.card h3 {
+	margin-top: 0;
+	margin-bottom: 0.75rem;
+}
+
+/* Host de tablas de pendientes si se renderiza tabla dinámica */
+#tbPendientesHost table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: .5rem;
+}
+
+#tbPendientesHost th,
+#tbPendientesHost td {
+	padding: .75rem 1rem;
+	text-align: left;
+	border-bottom: 1px solid var(--border-color);
+}
+
+#tbPendientesHost thead {
+	background-color: var(--sidebar-bg);
+}
+
+#tbPendientesHost th {
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	font-size: .85rem;
+	letter-spacing: .5px;
+}
+
+#tbPendientesHost tbody tr:hover {
+	background-color: #2a2a2a;
+}
