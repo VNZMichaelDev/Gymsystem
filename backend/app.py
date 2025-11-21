@@ -73,6 +73,16 @@ def create_app():
     # Crear tablas automáticamente si no existen
     with app.app_context():
         db.create_all()
+        
+        # Crear usuario admin por defecto si no existe
+        admin_email = "admin@gym.local"
+        admin_user = Usuario.query.filter_by(email=admin_email).first()
+        if not admin_user:
+            admin_user = Usuario(email=admin_email)
+            admin_user.set_password("admin123")
+            db.session.add(admin_user)
+            db.session.commit()
+            print(f"✅ Usuario admin creado: {admin_email}")
     
     # Handlers de JWT
     @jwt.unauthorized_loader
