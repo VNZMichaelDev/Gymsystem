@@ -101,6 +101,27 @@ def create_app():
                 # Si no existe el SQL, crear tablas desde modelos
                 db.create_all()
                 print("✅ Tablas creadas desde modelos")
+            
+            # Verificar y crear/actualizar usuario admin
+            try:
+                admin_email = "admin@gym.local"
+                admin_user = Usuario.query.filter_by(email=admin_email).first()
+                
+                if admin_user:
+                    # Actualizar contraseña del admin existente
+                    admin_user.set_password("admin123")
+                    db.session.commit()
+                    print(f"✅ Contraseña del admin actualizada")
+                else:
+                    # Crear nuevo admin
+                    admin_user = Usuario(email=admin_email)
+                    admin_user.set_password("admin123")
+                    db.session.add(admin_user)
+                    db.session.commit()
+                    print(f"✅ Usuario admin creado: {admin_email}")
+            except Exception as e:
+                print(f"⚠️  Error al crear/actualizar admin: {e}")
+                db.session.rollback()
                 
         except Exception as e:
             print(f"⚠️  Error al inicializar BD: {e}")
