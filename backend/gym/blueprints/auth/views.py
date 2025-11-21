@@ -87,3 +87,38 @@ def get_usuarios():
         return jsonify([user.to_dict() for user in usuarios]), 200
     except Exception as e:
         return jsonify({"message": f"Error al obtener usuarios: {str(e)}"}), 500
+
+
+# Ruta para crear un nuevo usuario (temporal, para setup inicial)
+@auth_bp.route("/register", methods=["POST"])
+def register():
+    """
+    Crea un nuevo usuario.
+    Body: {"email": "user@example.com", "password": "password123"}
+    """
+    data = request.get_json()
+    if not data or not data.get('email') or not data.get('password'):
+        return jsonify({"message": "Email y contraseña requeridos"}), 400
+    
+    email = data.get("email").strip().lower()
+    password = data.get("password")
+    
+    # Verificar si el usuario ya existe
+    existing_user = Usuario.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"message": "El usuario ya existe"}), 409
+    
+    try:
+        # Crear nuevo usuario
+        user = Usuario(email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        
+        return jsonify({
+            "message": "Usuario creado exitosamente",
+            "user": user.to_dict()
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Error al crear usuario: {str(e)}"}), 500
