@@ -72,57 +72,35 @@ def create_app():
     
     # Crear tablas automáticamente si no existen
     with app.app_context():
-        # Primero intentar crear todas las tablas desde los modelos
         try:
-            db.create_all()
-            print("✅ Tablas creadas desde modelos SQLAlchemy")
-        except Exception as e:
-            print(f"⚠️  Error creando tablas: {e}")
-        
-        # Verificar si la BD está vacía y ejecutar SQL de inicialización
-        try:
-            from sqlalchemy import text, inspect
+            from sqlalchemy import text
+            import os
             
-            # Verificar si la tabla Usuarios existe
-            inspector = inspect(db.engine)
-            tables = inspector.get_table_names()
-            
-            if 'Usuarios' not in tables and 'usuarios' not in tables:
-                # Tablas no existen, ejecutar SQL completo
-                import os
-                sql_file = os.path.join(os.path.dirname(__file__), 'bd', 'db_getfit.sql')
-                if os.path.exists(sql_file):
-                    with open(sql_file, 'r', encoding='utf-8') as f:
-                        sql_content = f.read()
-                    # Ejecutar el SQL línea por línea para evitar problemas
-                    for statement in sql_content.split(';'):
-                        if statement.strip():
-                            try:
-                                db.session.execute(text(statement))
-                            except Exception as stmt_error:
-                                print(f"⚠️  Error en statement: {stmt_error}")
-                    db.session.commit()
-                    print("✅ Base de datos inicializada con datos de ejemplo")
+            # Ejecutar SQL de inicialización directamente
+            sql_file = os.path.join(os.path.dirname(__file__), 'bd', 'db_getfit.sql')
+            if os.path.exists(sql_file):
+                with open(sql_file, 'r', encoding='utf-8') as f:
+                    sql_content = f.read()
+                
+                # Dividir por ; y ejecutar cada statement
+                statements = sql_content.split(';')
+                for statement in statements:
+                    stmt = statement.strip()
+                    if stmt and not stmt.startswith('--'):
+                        try:
+                            db.session.execute(text(stmt))
+                        except Exception as e:
+                            # Ignorar errores de "tabla ya existe" o similar
+                            if 'already exists' not in str(e).lower() and 'duplicate' not in str(e).lower():
+                                print(f"⚠️  {e}")
+                
+                db.session.commit()
+                print("✅ Base de datos inicializada")
             else:
-                # Tablas existen, verificar si hay datos
-                user_count = db.session.execute(text("SELECT COUNT(*) FROM Usuarios")).scalar()
-                if user_count == 0:
-                    print("⚠️  Tablas existen pero están vacías. Insertando datos...")
-                    import os
-                    sql_file = os.path.join(os.path.dirname(__file__), 'bd', 'db_getfit.sql')
-                    if os.path.exists(sql_file):
-                        with open(sql_file, 'r', encoding='utf-8') as f:
-                            sql_content = f.read()
-                        for statement in sql_content.split(';'):
-                            if 'INSERT' in statement.upper() and statement.strip():
-                                try:
-                                    db.session.execute(text(statement))
-                                except Exception as stmt_error:
-                                    print(f"⚠️  Error insertando: {stmt_error}")
-                        db.session.commit()
-                        print("✅ Datos insertados")
-                else:
-                    print(f"✅ Base de datos lista ({user_count} usuarios)")
+                # Si no existe el SQL, crear tablas desde modelos
+                db.create_all()
+                print("✅ Tablas creadas desde modelos")
+                
         except Exception as e:
             print(f"⚠️  Error al inicializar BD: {e}")
             db.session.rollback()
