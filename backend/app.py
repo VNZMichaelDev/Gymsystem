@@ -74,15 +74,25 @@ def create_app():
     with app.app_context():
         db.create_all()
         
-        # Crear usuario admin por defecto si no existe
-        admin_email = "admin@gym.local"
-        admin_user = Usuario.query.filter_by(email=admin_email).first()
-        if not admin_user:
-            admin_user = Usuario(email=admin_email)
-            admin_user.set_password("admin123")
-            db.session.add(admin_user)
-            db.session.commit()
-            print(f"✅ Usuario admin creado: {admin_email}")
+        # Verificar si la BD está vacía y ejecutar SQL de inicialización
+        try:
+            from sqlalchemy import text
+            # Contar usuarios para saber si la BD tiene datos
+            user_count = db.session.execute(text("SELECT COUNT(*) FROM Usuarios")).scalar()
+            
+            if user_count == 0:
+                # BD vacía, ejecutar SQL de inicialización
+                import os
+                sql_file = os.path.join(os.path.dirname(__file__), 'bd', 'db_getfit.sql')
+                if os.path.exists(sql_file):
+                    with open(sql_file, 'r', encoding='utf-8') as f:
+                        sql_content = f.read()
+                    db.session.execute(text(sql_content))
+                    db.session.commit()
+                    print("✅ Base de datos inicializada con datos de ejemplo")
+        except Exception as e:
+            print(f"⚠️  Error al inicializar BD: {e}")
+            db.session.rollback()
     
     # Handlers de JWT
     @jwt.unauthorized_loader
