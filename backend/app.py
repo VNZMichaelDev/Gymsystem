@@ -86,7 +86,8 @@ def create_app():
                 statements = sql_content.split(';')
                 for statement in statements:
                     stmt = statement.strip()
-                    if stmt and not stmt.startswith('--'):
+                    # Saltar comentarios, PRAGMA (SQLite), BEGIN/COMMIT (ya manejados), y líneas vacías
+                    if stmt and not stmt.startswith('--') and not stmt.upper().startswith('PRAGMA') and stmt.upper() not in ['BEGIN TRANSACTION', 'COMMIT']:
                         try:
                             db.session.execute(text(stmt))
                         except Exception as e:
