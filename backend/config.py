@@ -11,9 +11,15 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-muy-segura")
 
     # Configuración de la base de datos
-    # En Railway, DATABASE_URL se proporciona automáticamente para PostgreSQL
+    # En Render/Railway, DATABASE_URL se proporciona automáticamente para PostgreSQL
     # Para desarrollo local, usa SQLite
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///gym.db")
+    db_url = os.getenv("DATABASE_URL", "sqlite:///gym.db")
+    
+    # Convertir postgresql:// a postgresql+psycopg2:// para SQLAlchemy
+    if db_url and db_url.startswith("postgresql://"):
+        db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    
+    SQLALCHEMY_DATABASE_URI = db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Deshabilitar el seguimiento de modificaciones (para ahorrar recursos)
 
     # Configuración de JWT para la autenticación
