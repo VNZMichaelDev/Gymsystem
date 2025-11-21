@@ -157,6 +157,15 @@ def create_app():
     @app.get("/api/health")
     def health():
         return {"status": "ok"}
+    
+    # Servir index.html en la raíz para SPA
+    @app.get("/")
+    def serve_index():
+        import os
+        index_path = os.path.join(app.static_folder, 'index.html')
+        if os.path.exists(index_path):
+            return app.send_static_file('index.html')
+        return {"message": "Frontend not found"}, 404
 
     return app
 
