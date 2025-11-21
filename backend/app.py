@@ -68,6 +68,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)  # Inicializa JWT
+    init_cors(app)  # Inicializar CORS
     
     # Crear tablas automáticamente si no existen
     with app.app_context():
